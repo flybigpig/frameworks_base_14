@@ -5469,6 +5469,13 @@ public final class Settings {
         public static final String ARCANE_IDLE_MANAGER = "arcane_idle_manager";
 
         /**
+         * Whether to scramble a pin unlock layout
+         * @hide
+         */
+        public static final String LOCKSCREEN_SCRAMBLE_PIN_LAYOUT =
+            "lockscreen_scramble_pin_layout";
+
+        /**
          * @hide
          */
         public static final String[] LEGACY_RESTORE_SETTINGS = {
