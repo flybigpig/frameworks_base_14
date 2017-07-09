@@ -4,4 +4,7 @@
 
   <!-- These are system packages exempted from privacy indicator -->
   <java-symbol type="array" name="config_indicatorExemptedPackageNames" />
+
+    <!-- Sensor block -->
+    <java-symbol type="array" name="config_blockPackagesSensorDrain" />
 </resources>
