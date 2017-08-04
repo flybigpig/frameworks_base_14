@@ -5799,6 +5799,13 @@ public final class Settings {
         public static final String QS_TRANSPARENCY = "qs_transparency";
 
         /**
+         * Sensor block per-package
+         * @hide
+         */
+        @Readable
+        public static final String SENSOR_BLOCK = "sensor_block";
+
+        /**
          * @hide
          */
         public static final String[] LEGACY_RESTORE_SETTINGS = {
@@ -5962,6 +5969,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(LIVE_DISPLAY_HINTED);
             PRIVATE_SETTINGS.add(SWIPE_TO_SCREENSHOT);
             PRIVATE_SETTINGS.add(DISPLAY_CUTOUT_HIDDEN);
+            PRIVATE_SETTINGS.add(SENSOR_BLOCK);
         }
         /**
          * These entries are considered common between the personal and the managed profile,
