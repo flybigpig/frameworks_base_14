@@ -5765,6 +5765,13 @@ public final class Settings {
         public static final String ARCANE_IDLE_MANAGER = "arcane_idle_manager";
 
         /**
+         * Whether to use the custom quick unlock screen control
+         * @hide
+         */
+        public static final String LOCKSCREEN_QUICK_UNLOCK_CONTROL =
+                "lockscreen_quick_unlock_control";
+
+        /**
          * @hide
          */
         public static final String[] LEGACY_RESTORE_SETTINGS = {
