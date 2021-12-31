@@ -5758,6 +5758,13 @@ public final class Settings {
         public static final String SHOW_FOURG_ICON = "show_fourg_icon";
 
         /**
+         * Arcane Idle Manager
+         * @hide
+         */
+        @Readable
+        public static final String ARCANE_IDLE_MANAGER = "arcane_idle_manager";
+
+        /**
          * @hide
          */
         public static final String[] LEGACY_RESTORE_SETTINGS = {
