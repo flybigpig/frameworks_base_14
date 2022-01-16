@@ -5398,12 +5398,14 @@ public final class Settings {
         public static final String RETICKER_COLORED = "reticker_colored";
 
         /**
-         * Keys we no longer back up under the current schema, but want to continue to
-         * process when restoring historical backup datasets.
-         *
-         * All settings in {@link LEGACY_RESTORE_SETTINGS} array *must* have a non-null validator,
-         * otherwise they won't be restored.
-         *
+         * Whether to play notification sound and vibration if screen is ON
+         * 0 - never
+         * 1 - always
+         * @hide
+         */
+        public static final String NOTIFICATION_SOUND_VIB_SCREEN_ON = "notification_sound_vib_screen_on";
+
+        /**
          * @hide
          */
         public static final String[] LEGACY_RESTORE_SETTINGS = {
