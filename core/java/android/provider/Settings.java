@@ -11655,6 +11655,13 @@ public final class Settings {
         @Readable
         public static final String SCREEN_OFF_UDFPS_ENABLED = "screen_off_udfps_enabled";
 
+	/**
+         * Control whether FLAG_SECURE is ignored for all windows.
+         * @hide
+         */
+        @Readable
+        public static final String WINDOW_IGNORE_SECURE = "window_ignore_secure";
+
         /**
          * Whether key swap is enabled on supported hardware
          * @hide
@@ -17889,7 +17896,7 @@ public final class Settings {
          * @hide
          */
         public static final String RESTRICTED_NETWORKING_MODE = "restricted_networking_mode";
-        
+
         /**
          * Control whether application downgrade is allowed.
          * @hide
