@@ -4252,10 +4252,6 @@ public class StatusBar extends SystemUI implements
                 }
             }
         }
-    }
-
-    @Override
-    public void onTuningChanged(String key, String newValue) {
         switch (key) {
             case GAMING_MODE_ACTIVE:
                 boolean gamingModeActive =
