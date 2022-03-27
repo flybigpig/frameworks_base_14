@@ -11036,6 +11036,12 @@ public final class Settings {
          * Whether to show the auto brightness icon in quick settings panel.
          * @hide
          */
+        public static final String QS_BRIGHTNESS_SLIDER_POSITION = "qs_brightness_slider_position";
+
+        /**
+         * Whether to show the auto brightness icon in quick settings panel.
+         * @hide
+         */
         public static final String QS_SHOW_AUTO_BRIGHTNESS = "qs_show_auto_brightness";
 
          /**
