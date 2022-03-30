@@ -772,7 +772,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     handleRingerChordGesture();
                     break;
                 case MSG_CAMERA_LONG_PRESS:
-                    KeyEvent event = (KeyEvent) msg.obj;
+                    //event = (KeyEvent) msg.obj;
                     mIsLongPress = true;
                     break;
                 case MSG_TOGGLE_TORCH:
