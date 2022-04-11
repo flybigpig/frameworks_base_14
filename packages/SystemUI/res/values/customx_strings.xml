@@ -52,6 +52,8 @@
     <string name="global_action_restart_download" translatable="false">Download</string>
     <!-- Button to restart the device into fastboot mode, within the Restart Options dialog -->
     <string name="global_action_restart_fastboot" translatable="false">Fastbootd</string>
+    <!-- Button to restart the SystemUI, within the Restart Options dialog -->
+    <string name="global_action_restart_systemui" translatable="false">SystemUI</string>
 
     <!-- Label for current user in power menu options dialog -->
     <string name="global_action_current_user">Current</string>
