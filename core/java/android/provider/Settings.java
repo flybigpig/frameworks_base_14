@@ -5796,6 +5796,11 @@ public final class Settings {
         /**
          * @hide
          */
+        public static final String QS_TRANSPARENCY = "qs_transparency";
+
+        /**
+         * @hide
+         */
         public static final String[] LEGACY_RESTORE_SETTINGS = {
         };
 
