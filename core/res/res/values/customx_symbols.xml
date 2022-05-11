@@ -1,4 +1,7 @@
 <resources>
   <!-- For dynamic default font styles -->
   <java-symbol type="string" name="config_bodyFontFamily" />
+
+  <!-- These are system packages exempted from privacy indicator -->
+  <java-symbol type="array" name="config_indicatorExemptedPackageNames" />
 </resources>
