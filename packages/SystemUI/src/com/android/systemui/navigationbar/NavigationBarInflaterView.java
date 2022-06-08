@@ -97,8 +97,8 @@ public class NavigationBarInflaterView extends FrameLayout
 
     private static final String KEY_NAVIGATION_HINT =
             "customsystem:" + Settings.System.NAVIGATION_BAR_HINT;
-    private static final String KEY_NAVIGATION_NARROW =
-            "customsystem:" + Settings.System.NAVIGATION_BAR_GESTURAL_NARROW;
+    private static final String KEY_NAVIGATION_SPACE =
+            "customsystem:" + Settings.System.NAVIGATION_BAR_IME_SPACE;
     private static final String OVERLAY_NAVIGATION_HIDE_HINT =
             "org.pixelexperience.overlay.navbar.nohint";
 
@@ -193,7 +193,7 @@ public class NavigationBarInflaterView extends FrameLayout
         Dependency.get(TunerService.class).addTunable(this, NAV_BAR_INVERSE);
         Dependency.get(TunerService.class).addTunable(this, NAV_BAR_COMPACT);
         Dependency.get(TunerService.class).addTunable(this, KEY_NAVIGATION_HINT);
-        Dependency.get(TunerService.class).addTunable(this, KEY_NAVIGATION_NARROW);
+        Dependency.get(TunerService.class).addTunable(this, KEY_NAVIGATION_SPACE);
         mIsAttachedToWindow = true;
     }
 
@@ -222,11 +222,16 @@ public class NavigationBarInflaterView extends FrameLayout
             updateHint();
             onLikelyDefaultLayoutChange();
         } else if (mIsAttachedToWindow &&
-                mNavBarMode == NAV_BAR_MODE_GESTURAL && KEY_NAVIGATION_NARROW.equals(key)) {
-            boolean narrow = TunerService.parseIntegerSwitch(newValue, false);
+                mNavBarMode == NAV_BAR_MODE_GESTURAL && KEY_NAVIGATION_SPACE.equals(key)) {
+            int state = TunerService.parseInteger(newValue, 0);
             String overlay = NAV_BAR_MODE_GESTURAL_OVERLAY;
-            if (narrow)
-                overlay += "_narrow_back";
+            switch (state) {
+                case 1:  // narrow
+                    overlay += "_narrow_back";
+                    break;
+                case 2:  // hidden
+                    overlay += "_wide_back";
+            }
 
             try {
                 int userId = ActivityManager.getCurrentUser();
