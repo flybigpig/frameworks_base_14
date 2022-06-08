@@ -138,25 +138,7 @@ public class Fingerprint21UdfpsMock extends Fingerprint21 implements TrustManage
 
         TestableBiometricScheduler(Context context, @NonNull String tag, @NonNull Handler handler,
                 @Nullable GestureAvailabilityDispatcher gestureAvailabilityDispatcher) {
-            super(context, tag, BiometricScheduler.SENSOR_TYPE_FP_OTHER,
-                    gestureAvailabilityDispatcher);
-            mInternalCallback = new TestableInternalCallback();
-        }
-
-        class TestableInternalCallback extends InternalCallback {
-            @Override
-            public void onClientStarted(BaseClientMonitor clientMonitor) {
-                super.onClientStarted(clientMonitor);
-                Slog.d(TAG, "Client started: " + clientMonitor);
-                mFingerprint21.setDebugMessage("Started: " + clientMonitor);
-            }
-
-            @Override
-            public void onClientFinished(BaseClientMonitor clientMonitor, boolean success) {
-                super.onClientFinished(clientMonitor, success);
-                Slog.d(TAG, "Client finished: " + clientMonitor);
-                mFingerprint21.setDebugMessage("Finished: " + clientMonitor);
-            }
+            super(context, tag, BiometricScheduler.SENSOR_TYPE_FP_OTHER, gestureAvailabilityDispatcher);
         }
 
         void init(@NonNull Fingerprint21UdfpsMock fingerprint21) {
