@@ -295,6 +295,8 @@ public class StatusBar extends SystemUI implements
             "customsystem:" + Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL;
     private static final String DISPLAY_CUTOUT_HIDDEN =
             "customsystem:" + Settings.System.DISPLAY_CUTOUT_HIDDEN;
+    private static final String QS_TRANSPARENCY =
+            "system:" + Settings.System.QS_TRANSPARENCY;
 
     private static final String BANNER_ACTION_CANCEL =
             "com.android.systemui.statusbar.banner_action_cancel";
@@ -1006,6 +1008,7 @@ public class StatusBar extends SystemUI implements
         mTunerService.addTunable(this, SCREEN_BRIGHTNESS_MODE);
         mTunerService.addTunable(this, STATUS_BAR_BRIGHTNESS_CONTROL);
         mTunerService.addTunable(this, DISPLAY_CUTOUT_HIDDEN);
+        mTunerService.addTunable(this, QS_TRANSPARENCY);
 
         mDisplayManager = mContext.getSystemService(DisplayManager.class);
 
@@ -4471,6 +4474,8 @@ public class StatusBar extends SystemUI implements
             mBrightnessControl = TunerService.parseIntegerSwitch(newValue, false);
         } else if (DISPLAY_CUTOUT_HIDDEN.equals(key)) {
             updateCutoutOverlay(TunerService.parseIntegerSwitch(newValue, false));
+        } else if (QS_TRANSPARENCY.equals(key)) {
+            mScrimController.setCustomScrimAlpha(TunerService.parseInteger(newValue, 100));
         }
     }
     // End Extra BaseStatusBarMethods.
