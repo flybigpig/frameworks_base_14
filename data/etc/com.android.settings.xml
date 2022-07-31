@@ -136,5 +136,7 @@
         <permission name="android.permission.MANAGE_GAME_MODE"/>
         <permission name="com.google.android.settings.routines.ROUTINES_ACTIONS"/>
         <permission name="com.google.android.settings.routines.BATTERY_DATA"/>
+        <permission name="lineageos.permission.MANAGE_LIVEDISPLAY"/>
+        <permission name="lineageos.permission.HARDWARE_ABSTRACTION_ACCESS"/>
     </privapp-permissions>
 </permissions>
