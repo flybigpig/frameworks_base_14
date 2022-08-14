@@ -36,6 +36,7 @@ public class PixelPropsUtils {
 
     private static final Map<String, Object> propsToChangePixel6;
     private static final String[] packagesToChangePixel6 = {
+            "com.google.android.inputmethod.latin",
             "com.samsung.accessory",
             "com.samsung.accessory.fridaymgr",
             "com.samsung.accessory.berrymgr",
