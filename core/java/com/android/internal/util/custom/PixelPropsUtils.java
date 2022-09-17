@@ -60,10 +60,7 @@ public class PixelPropsUtils {
             "com.breel.wallpapers20",
             "com.nothing.smartcenter",
             "com.nhs.online.nhsonline",
-            "com.snapchat.android"
-    };
-
-    private static final String[] streamingPackagesToChange = {
+            "com.snapchat.android",
             "com.amazon.avod.thirdpartyclient",
             "com.disney.disneyplus",
             "com.netflix.mediaclient",
@@ -196,8 +193,7 @@ public class PixelPropsUtils {
         }
         if (packageName.startsWith("com.google.")
                 || packageName.startsWith(SAMSUNG)
-                || Arrays.asList(extraPackagesToChange).contains(packageName)
-                || Arrays.asList(streamingPackagesToChange).contains(packageName)) {
+                || Arrays.asList(extraPackagesToChange).contains(packageName)) {
 
             boolean isPixelDevice = Arrays.asList(pixelCodenames).contains(SystemProperties.get(DEVICE));
 
