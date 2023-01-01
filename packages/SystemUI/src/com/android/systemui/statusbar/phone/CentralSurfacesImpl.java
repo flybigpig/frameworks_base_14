@@ -32,9 +32,6 @@ import static androidx.core.view.ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
 import static androidx.core.view.ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
 import static androidx.lifecycle.Lifecycle.State.RESUMED;
 
-import static com.android.settingslib.display.BrightnessUtils.GAMMA_SPACE_MAX;
-import static com.android.settingslib.display.BrightnessUtils.convertGammaToLinearFloat;
-
 import static com.android.systemui.Dependency.TIME_TICK_HANDLER_NAME;
 import static com.android.systemui.charging.WirelessChargingAnimation.UNKNOWN_BATTERY_LEVEL;
 import static com.android.systemui.keyguard.WakefulnessLifecycle.WAKEFULNESS_ASLEEP;
@@ -566,8 +563,7 @@ public class CentralSurfacesImpl extends CoreStartable implements
 
     private DisplayManager mDisplayManager;
 
-    private float mMinimumBacklight;
-    private float mMaximumBacklight;
+    private int mMinBrightness;
     private int mInitialTouchX;
     private int mInitialTouchY;
     private int mLinger;
@@ -1212,10 +1208,8 @@ public class CentralSurfacesImpl extends CoreStartable implements
         mNotificationShadeWindowView.setOnTouchListener(getStatusBarWindowTouchListener());
         mWallpaperController.setRootView(mNotificationShadeWindowView);
 
-        mMinimumBacklight = mPowerManager.getBrightnessConstraint(
-                PowerManager.BRIGHTNESS_CONSTRAINT_TYPE_MINIMUM);
-        mMaximumBacklight = mPowerManager.getBrightnessConstraint(
-                PowerManager.BRIGHTNESS_CONSTRAINT_TYPE_MAXIMUM);
+        mMinBrightness = mContext.getResources().getInteger(
+                com.android.internal.R.integer.config_screenBrightnessDim);
 
         // TODO: Deal with the ugliness that comes from having some of the status bar broken out
         // into fragments, but the rest here, it leaves some awkward lifecycle and whatnot.
@@ -2233,13 +2227,15 @@ public class CentralSurfacesImpl extends CoreStartable implements
                         UserHandle.USER_CURRENT);
             });
         } else {
-            final float val = convertGammaToLinearFloat(
-                    Math.round(value * GAMMA_SPACE_MAX),
-                    mMinimumBacklight, mMaximumBacklight);
+            int newBrightness = mMinBrightness + (int) Math.round(value *
+                    (PowerManager.BRIGHTNESS_ON - mMinBrightness));
+            newBrightness = Math.min(newBrightness, PowerManager.BRIGHTNESS_ON);
+            newBrightness = Math.max(newBrightness, mMinBrightness);
+            final int val = newBrightness;
             mDisplayManager.setTemporaryBrightness(mDisplayId, val);
             AsyncTask.execute(() -> {
-                Settings.System.putFloatForUser(mContext.getContentResolver(),
-                        Settings.System.SCREEN_BRIGHTNESS_FLOAT, val,
+                Settings.System.putIntForUser(mContext.getContentResolver(),
+                        Settings.System.SCREEN_BRIGHTNESS, val,
                         UserHandle.USER_CURRENT);
             });
         }
