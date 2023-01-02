@@ -191,6 +191,20 @@ public class PixelPropsUtils {
         if (Arrays.asList(packagesToKeep).contains(packageName)) {
             return;
         }
+        if (packageName.equals("com.google.android.gms")) {
+            final String processName = Application.getProcessName();
+            if (processName.equals("com.google.android.gms.unstable")) {
+                sIsGms = true;
+                setPropValue("FINGERPRINT", "google/angler/angler:6.0/MDB08L/2343525:user/release-keys");
+                setPropValue("MODEL", "angler");
+            }
+            return;
+        }
+        // Set proper indexing fingerprint
+        if (packageName.equals("com.google.android.settings.intelligence")) {
+            setPropValue("FINGERPRINT", Build.VERSION.INCREMENTAL);
+            return;
+        }
         if (packageName.startsWith("com.google.")
                 || packageName.startsWith(SAMSUNG)
                 || Arrays.asList(extraPackagesToChange).contains(packageName)) {
@@ -231,19 +245,6 @@ public class PixelPropsUtils {
             }
             if (DEBUG) Log.d(TAG, "Defining " + key + " prop for: " + packageName);
             setPropValue(key, value);
-        }
-        if (packageName.equals("com.google.android.gms")) {
-            final String processName = Application.getProcessName();
-            if (processName.equals("com.google.android.gms.unstable")) {
-                sIsGms = true;
-                setPropValue("FINGERPRINT", "google/angler/angler:6.0/MDB08L/2343525:user/release-keys");
-                setPropValue("MODEL", "angler");
-            }
-            return;
-        }
-        // Set proper indexing fingerprint
-        if (packageName.equals("com.google.android.settings.intelligence")) {
-            setPropValue("FINGERPRINT", Build.VERSION.INCREMENTAL);
         }
     }
 
