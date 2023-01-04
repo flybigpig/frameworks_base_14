@@ -19,6 +19,7 @@ package com.android.internal.util.custom;
 
 import android.app.Application;
 import android.os.Build;
+import android.os.Build.VERSION;
 import android.os.SystemProperties;
 import android.util.Log;
 
@@ -212,6 +213,8 @@ public class PixelPropsUtils {
             if (processName.equals("com.google.android.gms.unstable")) {
                 sIsGms = true;
                 setPropValue("FINGERPRINT", "google/walleye/walleye:8.1.0/OPM1.171019.011/4448085:user/release-keys");
+                dlog("Setting sdk to 32");
+                setVersionField("DEVICE_INITIAL_SDK_INT", Build.VERSION_CODES.S);
             }
             return;
         }
@@ -269,13 +272,29 @@ public class PixelPropsUtils {
 
     private static void setPropValue(String key, Object value) {
         try {
-            if (DEBUG) Log.d(TAG, "Defining prop " + key + " to " + value.toString());
+            dlog("Setting prop " + key + " to " + value.toString());
             Field field = Build.class.getDeclaredField(key);
             field.setAccessible(true);
             field.set(null, value);
             field.setAccessible(false);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             Log.e(TAG, "Failed to set prop " + key, e);
+        }
+    }
+
+    private static void setVersionField(String key, Integer value) {
+        try {
+            // Unlock
+            Field field = Build.VERSION.class.getDeclaredField(key);
+            field.setAccessible(true);
+
+            // Edit
+            field.set(null, value);
+
+            // Lock
+            field.setAccessible(false);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            Log.e(TAG, "Failed to spoof Build." + key, e);
         }
     }
 
@@ -294,5 +313,9 @@ public class PixelPropsUtils {
         if (sIsFinsky) {
             throw new UnsupportedOperationException();
         }
+    }
+
+    public static void dlog(String msg) {
+      if (DEBUG) Log.d(TAG, msg);
     }
 }
