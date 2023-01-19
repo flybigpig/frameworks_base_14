@@ -24,6 +24,7 @@ import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_GESTURAL_OV
 import android.annotation.Nullable;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.om.IOverlayManager;
 import android.content.om.OverlayInfo;
 import android.content.res.Configuration;
@@ -167,14 +168,22 @@ public class NavigationBarInflaterView extends FrameLayout
     }
 
     protected String getDefaultLayout() {
+        final boolean navigation_bar_swap = (Settings.Secure.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.Secure.NAV_BAR_BUTTON_SWAP_ENABLED, 0,
+                ActivityManager.getCurrentUser()) == 1);
         final int defaultResource = QuickStepContract.isGesturalMode(mNavBarMode)
                 ? R.string.config_navBarLayoutHandle
                 : mOverviewProxyService.shouldShowSwipeUpUI()
                         ? R.string.config_navBarLayoutQuickstep
-                        : R.string.config_navBarLayout;
+                        : navigation_bar_swap
+                                ? R.string.config_navBarLayoutReverse
+                                : R.string.config_navBarLayout;
         if ((defaultResource == R.string.config_navBarLayout ||
                 defaultResource == R.string.config_navBarLayoutQuickstep) && mCompactLayout){
             return "left;back,home,recent;right";
+        } else if ((defaultResource == R.string.config_navBarLayoutReverse) && mCompactLayout){
+            return "left;recent,home,back;right";
         }
         if (!mIsHintEnabledRef.get() && defaultResource == R.string.config_navBarLayoutHandle) {
             return getContext().getString(defaultResource).replace(HOME_HANDLE, "");
