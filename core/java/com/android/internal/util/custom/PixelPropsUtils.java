@@ -217,7 +217,7 @@ public class PixelPropsUtils {
                 dlog("Setting sdk to 32");
                 setVersionField("DEVICE_INITIAL_SDK_INT", Build.VERSION_CODES.S);
             } else if (processName.toLowerCase().contains("persistent")) {
-                propsToChange.putAll(propsToChangePixel6Pro);
+                propsToChange.putAll(propsToChangePixel7Pro);
             }
             return;
         }
