@@ -220,7 +220,9 @@ public class PixelPropsUtils {
                 setPropValue("FINGERPRINT", "google/walleye/walleye:8.1.0/OPM1.171019.011/4448085:user/release-keys");
                 dlog("Setting sdk to 32");
                 setVersionField("DEVICE_INITIAL_SDK_INT", Build.VERSION_CODES.S);
-            } else if (processName.toLowerCase().contains("persistent")) {
+            } else if (processName.toLowerCase().contains("persistent")
+                        || processName.toLowerCase().contains("ui")
+                        || processName.toLowerCase().contains("learning")) {
                 propsToChange.putAll(propsToChangePixel7Pro);
             }
             return;
