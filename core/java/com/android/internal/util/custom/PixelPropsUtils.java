@@ -128,6 +128,7 @@ public class PixelPropsUtils {
             "com.google.android.GoogleCameraGood",
             "com.google.android.MTCL83",
             "com.google.android.UltraCVM",
+            "com.google.android.apps.tachyon",
             "com.google.android.apps.cameralite",
             "com.google.android.euicc",
             "com.google.ar.core",
