@@ -3,4 +3,6 @@
     <color name="reticker_background_color">@android:color/system_neutral1_0</color>
 
     <color name="footer_actions_bg">@android:color/system_neutral1_50</color>
+
+    <color name="qs_security_footer_bg_stroke">@android:color/system_neutral1_0</color>
 </resources>
