@@ -374,7 +374,8 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
     private float mCurrentBackProgress = 0.0f;
     private boolean mTracking;
     private boolean mHintAnimationRunning;
-    private KeyguardBottomAreaView mKeyguardBottomArea;
+    // Need public mKeyguardBottomArea for use by elmyra
+    public KeyguardBottomAreaView mKeyguardBottomArea;
     private boolean mExpanding;
     private boolean mSplitShadeEnabled;
     private boolean mDualShadeEnabled;
