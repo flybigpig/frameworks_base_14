@@ -53,6 +53,8 @@ import com.android.systemui.statusbar.policy.RotationLockController;
 import com.android.systemui.statusbar.policy.RotationLockController.RotationLockControllerCallback;
 import com.android.systemui.util.settings.SecureSettings;
 
+import com.google.android.systemui.qs.tiles.RotationLockTileGoogle;
+
 import javax.inject.Inject;
 
 /** Quick settings tile: Rotation **/
@@ -69,6 +71,8 @@ public class RotationLockTile extends QSTileImpl<BooleanState> implements
     private final BatteryController mBatteryController;
     private final SettingObserver mSetting;
     private final boolean mAllowRotationResolver;
+
+    private final RotationLockTileGoogle mRotationLockTileGoogle;
 
     @Inject
     public RotationLockTile(
@@ -102,12 +106,14 @@ public class RotationLockTile extends QSTileImpl<BooleanState> implements
             @Override
             protected void handleValueChanged(int value, boolean observedChange) {
                 // mHandler is the background handler so calling this is OK
-                handleRefreshState(null);
+                mRotationLockTileGoogle.handleRefreshState(null);
             }
         };
         mBatteryController.observe(getLifecycle(), this);
         mAllowRotationResolver = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_allowRotationResolver);
+
+        mRotationLockTileGoogle = (RotationLockTileGoogle) this;
     }
 
     @Override
@@ -217,11 +223,11 @@ public class RotationLockTile extends QSTileImpl<BooleanState> implements
     private final RotationLockControllerCallback mCallback = new RotationLockControllerCallback() {
         @Override
         public void onRotationLockStateChanged(boolean rotationLocked, boolean affordanceVisible) {
-            refreshState(rotationLocked);
+            mRotationLockTileGoogle.refreshState(rotationLocked);
         }
     };
 
     private final SensorPrivacyManager.OnSensorPrivacyChangedListener
             mSensorPrivacyChangedListener =
-            (sensor, enabled) -> refreshState();
+            (sensor, enabled) -> mRotationLockTileGoogle.refreshState(null);
 }

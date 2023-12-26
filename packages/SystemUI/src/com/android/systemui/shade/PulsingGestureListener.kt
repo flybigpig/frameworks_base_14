@@ -37,6 +37,8 @@ import com.android.systemui.tuner.TunerService.Tunable
 import java.io.PrintWriter
 import javax.inject.Inject
 
+import com.google.android.systemui.dreamliner.DockObserver
+
 /**
  * If tap and/or double tap to wake is enabled, this gestureListener will wake the display on
  * tap/double tap when the device is pulsing (AoD2) or transitioning to AoD. Taps are gated by the
@@ -62,6 +64,7 @@ class PulsingGestureListener @Inject constructor(
     private var doubleTapEnabled = false
     private var singleTapEnabled = false
     private var doubleTapEnabledNative = false
+    private var dockObserver: DockObserver = dockManager as DockObserver
 
     init {
         val tunable = Tunable { key: String?, value: String? ->
@@ -85,7 +88,7 @@ class PulsingGestureListener @Inject constructor(
     }
 
     override fun onSingleTapUp(e: MotionEvent): Boolean {
-        val isNotDocked = !dockManager.isDocked
+        val isNotDocked = !dockObserver.isDocked
         shadeLogger.logSingleTapUp(statusBarStateController.isDozing, singleTapEnabled, isNotDocked)
         if (statusBarStateController.isDozing && singleTapEnabled && isNotDocked) {
             val proximityIsNotNear = !falsingManager.isProximityNear
@@ -125,7 +128,7 @@ class PulsingGestureListener @Inject constructor(
         pw.println("singleTapEnabled=$singleTapEnabled")
         pw.println("doubleTapEnabled=$doubleTapEnabled")
         pw.println("doubleTapEnabledNative=$doubleTapEnabledNative")
-        pw.println("isDocked=${dockManager.isDocked}")
+        pw.println("isDocked=${dockObserver.isDocked}")
         pw.println("isProxCovered=${falsingManager.isProximityNear}")
     }
 }

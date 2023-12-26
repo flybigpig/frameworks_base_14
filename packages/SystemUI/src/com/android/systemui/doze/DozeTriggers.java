@@ -63,6 +63,8 @@ import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
+import com.google.android.systemui.dreamliner.DockObserver;
+
 /**
  * Handles triggers for ambient state changes.
  */
@@ -502,7 +504,7 @@ public class DozeTriggers implements DozeMachine.Part {
 
     private void registerCallbacks() {
         mBroadcastReceiver.register(mBroadcastDispatcher);
-        mDockManager.addListener(mDockEventListener);
+        ((DockObserver) mDockManager).addListener(mDockEventListener);
         mDozeHost.addCallback(mHostCallback);
         mUserTracker.addCallback(mUserChangedCallback, mContext.getMainExecutor());
     }
@@ -510,7 +512,7 @@ public class DozeTriggers implements DozeMachine.Part {
     private void unregisterCallbacks() {
         mBroadcastReceiver.unregister(mBroadcastDispatcher);
         mDozeHost.removeCallback(mHostCallback);
-        mDockManager.removeListener(mDockEventListener);
+        ((DockObserver) mDockManager).removeListener(mDockEventListener);
         mUserTracker.removeCallback(mUserChangedCallback);
     }
 

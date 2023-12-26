@@ -31,6 +31,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Insets;
@@ -101,6 +102,8 @@ import com.android.wm.shell.back.BackAnimation;
 import com.android.wm.shell.desktopmode.DesktopMode;
 import com.android.wm.shell.pip.Pip;
 
+import com.google.android.systemui.gesture.BackGestureTfClassifierProviderGoogle;
+
 import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -114,6 +117,8 @@ import java.util.function.Consumer;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+
+import org.tensorflow.lite.Interpreter;
 
 /**
  * Utility class to handle edge swipes for back gesture
@@ -226,6 +231,8 @@ public class EdgeBackGestureHandler implements PluginListener<NavigationEdgeBack
     private final Provider<NavigationBarEdgePanel> mNavBarEdgePanelProvider;
     private final Provider<BackGestureTfClassifierProvider>
             mBackGestureTfClassifierProviderProvider;
+    private BackGestureTfClassifierProviderGoogle
+            mBackGestureTfClassifierGoogle;
     private final FeatureFlags mFeatureFlags;
     private final Provider<LightBarController> mLightBarControllerProvider;
 
@@ -851,6 +858,13 @@ public class EdgeBackGestureHandler implements PluginListener<NavigationEdgeBack
             mMLModelIsLoading = true;
             mBackgroundExecutor.execute(() -> loadMLModel());
         } else if (mBackGestureTfClassifierProvider != null) {
+            mBackGestureTfClassifierGoogle = (BackGestureTfClassifierProviderGoogle) mBackGestureTfClassifierProvider;
+            mBackGestureTfClassifierGoogle.mVocab = null;
+            mBackGestureTfClassifierGoogle.mModelLoaded = false;
+            Interpreter interpreter = mBackGestureTfClassifierGoogle.mInterpreter;
+            if (interpreter != null) {
+                interpreter.close();
+            }
             mBackGestureTfClassifierProvider.release();
             mBackGestureTfClassifierProvider = null;
             mVocab = null;
@@ -869,7 +883,17 @@ public class EdgeBackGestureHandler implements PluginListener<NavigationEdgeBack
         }
         if (provider != null) {
             Trace.beginSection("EdgeBackGestureHandler#loadVocab");
-            vocab = provider.loadVocab(mContext.getAssets());
+            AssetManager assets = mContext.getAssets();
+            mBackGestureTfClassifierGoogle = (BackGestureTfClassifierProviderGoogle) provider;
+            synchronized (BackGestureTfClassifierProviderGoogle.sModelLoadingLock) {
+                if (!mBackGestureTfClassifierGoogle.mModelLoaded) {
+                    mBackGestureTfClassifierGoogle.loadModel(assets);
+                }
+                if (mBackGestureTfClassifierGoogle.mVocab == null) {
+                    mBackGestureTfClassifierGoogle.mVocab = mBackGestureTfClassifierGoogle.readVocab(assets);
+                }
+                vocab = mBackGestureTfClassifierGoogle.mVocab;
+            }
             Trace.endSection();
         }
         BackGestureTfClassifierProvider finalProvider = provider;
@@ -884,6 +908,13 @@ public class EdgeBackGestureHandler implements PluginListener<NavigationEdgeBack
         if (!mUseMLModel) {
             // This can happen if the user disables Gesture Nav while the model is loading.
             if (provider != null) {
+                mBackGestureTfClassifierGoogle = (BackGestureTfClassifierProviderGoogle) provider;
+                mBackGestureTfClassifierGoogle.mVocab = null;
+                mBackGestureTfClassifierGoogle.mModelLoaded = false;
+                Interpreter interpreter = mBackGestureTfClassifierGoogle.mInterpreter;
+                if (interpreter != null) {
+                    interpreter.close();
+                }
                 provider.release();
             }
             Log.d(TAG, "Model finished loading but isn't needed.");

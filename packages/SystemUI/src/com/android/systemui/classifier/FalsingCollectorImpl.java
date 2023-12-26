@@ -43,6 +43,8 @@ import com.android.systemui.util.sensors.ThresholdSensor;
 import com.android.systemui.util.sensors.ThresholdSensorEvent;
 import com.android.systemui.util.time.SystemClock;
 
+import com.google.android.systemui.dreamliner.DockObserver;
+
 import java.util.Collections;
 
 import javax.inject.Inject;
@@ -108,7 +110,7 @@ class FalsingCollectorImpl implements FalsingCollector {
 
         @Override
         public void onWirelessChargingChanged(boolean isWirelessCharging) {
-            if (isWirelessCharging || mDockManager.isDocked()) {
+            if (isWirelessCharging || ((DockObserver) mDockManager).isDocked()) {
                 mProximitySensor.pause();
             } else {
                 mProximitySensor.resume();
@@ -164,7 +166,7 @@ class FalsingCollectorImpl implements FalsingCollector {
         shadeExpansionStateManager.addQsExpansionListener(this::onQsExpansionChanged);
 
         mBatteryController.addCallback(mBatteryListener);
-        mDockManager.addListener(mDockEventListener);
+        ((DockObserver) mDockManager).addListener(mDockEventListener);
     }
 
     @Override

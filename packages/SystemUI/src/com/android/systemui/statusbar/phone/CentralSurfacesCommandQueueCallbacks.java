@@ -534,7 +534,14 @@ public class CentralSurfacesCommandQueueCallbacks implements CommandQueue.Callba
 
     @Override
     public void showWirelessChargingAnimation(int batteryLevel) {
-        mCentralSurfaces.showWirelessChargingAnimation(batteryLevel);
+        CentralSurfacesGoogle centralSurfacesGoogle = (CentralSurfacesGoogle) mCentralSurfaces;
+        if (CentralSurfacesGoogle.DEBUG) {
+            centralSurfacesGoogle.getClass();
+            Log.d("CentralSurfacesGoogle", "showWirelessChargingAnimation()");
+        }
+        centralSurfacesGoogle.mChargingAnimShown = true;
+        centralSurfacesGoogle.showChargingAnimation(batteryLevel, -1, 0L);
+        centralSurfacesGoogle.mAnimStartTime = SystemClock.uptimeMillis();
     }
 
     @Override

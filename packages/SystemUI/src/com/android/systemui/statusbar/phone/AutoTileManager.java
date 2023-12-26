@@ -49,6 +49,8 @@ import com.android.systemui.statusbar.policy.WalletController;
 import com.android.systemui.util.UserAwareController;
 import com.android.systemui.util.settings.SecureSettings;
 
+import com.google.android.systemui.statusbar.phone.AutoTileManagerGoogle;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -94,6 +96,8 @@ public class AutoTileManager implements UserAwareController {
     private final boolean mIsReduceBrightColorsAvailable;
     private final ArrayList<AutoAddSetting> mAutoAddSettingList = new ArrayList<>();
 
+    private AutoTileManagerGoogle mAutoTileManagerGoogle;
+
     public AutoTileManager(Context context, AutoAddTracker.Builder autoAddTrackerBuilder,
             QSHost host,
             @Background Handler handler,
@@ -136,6 +140,15 @@ public class AutoTileManager implements UserAwareController {
         }
         mSafetySpec = safetySpecClass != null ? CustomTile.toSpec(new ComponentName(mContext
                 .getPackageManager().getPermissionControllerPackageName(), safetySpecClass)) : null;
+
+        mAutoTileManagerGoogle =
+            new AutoTileManagerGoogle(
+                    mContext, mHost, mSecureSettings,
+                    mHotspotController, mDataSaverController,
+                    mManagedProfileController, mNightDisplayListenerBuilder,
+                    mCastController, mReduceBrightColorsController
+                    mDeviceControlsController, mWalletController
+                    mSafetyController, mIsReduceBrightColorsAvailable);
     }
 
     /**
@@ -246,7 +259,7 @@ public class AutoTileManager implements UserAwareController {
                 String spec = split[1];
                 // Populate all the settings. As they may not have been added in other users
                 AutoAddSetting s = new AutoAddSetting(
-                        mSecureSettings, mHandler, setting, mCurrentUser.getIdentifier(), spec);
+                    mAutoTileManagerGoogle, mSecureSettings, mHandler, setting, mCurrentUser.getIdentifier(), spec);
                 mAutoAddSettingList.add(s);
             } else {
                 Log.w(TAG, "Malformed item in array: " + tile);
@@ -478,8 +491,10 @@ public class AutoTileManager implements UserAwareController {
      */
     private class AutoAddSetting extends SettingObserver {
         private final String mSpec;
+        public final AutoTileManager mAutoTileManager;
 
         AutoAddSetting(
+                AutoTileManagerGoogle autoTileManagerGoogle,
                 SecureSettings secureSettings,
                 Handler handler,
                 String setting,
@@ -487,24 +502,25 @@ public class AutoTileManager implements UserAwareController {
                 String tileSpec
         ) {
             super(secureSettings, handler, setting, userId);
+            mAutoTileManager = autoTileManagerGoogle;
             mSpec = tileSpec;
         }
 
         @Override
         protected void handleValueChanged(int value, boolean observedChange) {
-            if (mAutoTracker.isAdded(mSpec)) {
+            if (mAutoTileManager.mAutoTracker.isAdded(mSpec)) {
                 // This should not be listening anymore
-                mHandler.post(() -> setListening(false));
+                mAutoTileManager.mHandler.post(() -> setListening(false));
                 return;
             }
             if (value != 0) {
                 if (mSpec.startsWith(CustomTile.PREFIX)) {
-                    mHost.addTile(CustomTile.getComponentFromSpec(mSpec), /* end */ true);
+                    mAutoTileManager.mHost.addTile(CustomTile.getComponentFromSpec(mSpec), /* end */ true);
                 } else {
-                    mHost.addTile(mSpec);
+                    mAutoTileManager.mHost.addTile(mSpec);
                 }
-                mAutoTracker.setTileAdded(mSpec);
-                mHandler.post(() -> setListening(false));
+                mAutoTileManager.mAutoTracker.setTileAdded(mSpec);
+                mAutoTileManager.mHandler.post(() -> setListening(false));
             }
         }
     }

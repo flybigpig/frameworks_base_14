@@ -87,6 +87,8 @@ import javax.inject.Inject;
 
 import kotlinx.coroutines.CoroutineDispatcher;
 
+import com.google.android.systemui.dreamliner.DockObserver;
+
 /**
  * Controls both the scrim behind the notifications and in front of the notifications (when a
  * security method gets shown).
@@ -565,7 +567,7 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
         }
 
         if (mState == ScrimState.AOD
-                && (mDozeParameters.getAlwaysOn() || mDockManager.isDocked())) {
+                && (mDozeParameters.getAlwaysOn() || !((DockObserver) mDockManager).isDocked())) {
             return true;
         }
 

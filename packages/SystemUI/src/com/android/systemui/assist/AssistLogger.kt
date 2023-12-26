@@ -20,6 +20,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
+import android.util.StatsEvent
+import android.util.StatsLog
 import com.android.internal.app.AssistUtils
 import com.android.internal.logging.InstanceId
 import com.android.internal.logging.InstanceIdSequence
@@ -30,6 +32,8 @@ import com.android.systemui.assist.AssistantInvocationEvent.Companion.eventFromL
 import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.settings.UserTracker
 import javax.inject.Inject
+
+import com.google.android.systemui.assist.GoogleAssistLogger
 
 /** Class for reporting events related to Assistant sessions. */
 @SysUISingleton
@@ -101,6 +105,15 @@ open class AssistLogger @Inject constructor(
     }
 
     protected open fun reportAssistantInvocationExtraData() {
+        val googleAssistLogger: GoogleAssistLogger = this as GoogleAssistLogger
+        val atomIdGoogle: StatsEvent.Builder = StatsEvent.newBuilder().setAtomId(100045)
+        val instanceIdGoogle = googleAssistLogger.currentInstanceId
+                ?: googleAssistLogger.instanceIdSequence.newInstanceId()
+        googleAssistLogger.currentInstanceId = instanceIdGoogle
+
+        StatsLog.write(
+            atomIdGoogle.writeInt(instanceIdGoogle.getId()).writeBoolean(
+                        googleAssistLogger.assistantPresenceHandler.mNgaIsAssistant).build())
     }
 
     protected fun getOrCreateInstanceId(): InstanceId {

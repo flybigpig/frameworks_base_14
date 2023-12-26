@@ -58,6 +58,9 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.Future;
 
+import com.google.android.systemui.power.EnhancedEstimatesGoogleImpl;
+import com.google.android.systemui.power.PowerNotificationWarningsGoogleImpl;
+
 import javax.inject.Inject;
 
 import dagger.Lazy;
@@ -130,7 +133,7 @@ public class PowerUI implements CoreStartable, CommandQueue.Callbacks {
             new UserTracker.Callback() {
                 @Override
                 public void onUserChanged(int newUser, @NonNull Context userContext) {
-                    mWarnings.userSwitched();
+                    ((PowerNotificationWarningsGoogleImpl) mWarnings).userSwitched();
                 }
             };
 
@@ -285,7 +288,7 @@ public class PowerUI implements CoreStartable, CommandQueue.Callbacks {
             if (PowerManager.ACTION_POWER_SAVE_MODE_CHANGED.equals(action)) {
                 ThreadUtils.postOnBackgroundThread(() -> {
                     if (mPowerManager.isPowerSaveMode()) {
-                        mWarnings.dismissLowBatteryWarning();
+                        ((PowerNotificationWarningsGoogleImpl) mWarnings).dismissLowBatteryWarning();
                     }
                 });
             } else if (Intent.ACTION_BATTERY_CHANGED.equals(action)) {
@@ -388,11 +391,11 @@ public class PowerUI implements CoreStartable, CommandQueue.Callbacks {
 
     // updates the time estimate if we don't have one or battery level has changed.
     @VisibleForTesting
-    Estimate refreshEstimateIfNeeded() {
+    public Estimate refreshEstimateIfNeeded() {
         if (mLastBatteryStateSnapshot == null
                 || mLastBatteryStateSnapshot.getTimeRemainingMillis() == NO_ESTIMATE_AVAILABLE
                 || mBatteryLevel != mLastBatteryStateSnapshot.getBatteryLevel()) {
-            final Estimate estimate = mEnhancedEstimates.getEstimate();
+            final Estimate estimate = ((EnhancedEstimatesGoogleImpl) mEnhancedEstimates).getEstimate();
             if (DEBUG) {
                 Slog.d(TAG, "updated estimate: " + estimate.getEstimateMillis());
             }
@@ -436,7 +439,7 @@ public class PowerUI implements CoreStartable, CommandQueue.Callbacks {
             if (DEBUG) {
                 Slog.d(TAG, "Dismissing warning");
             }
-            mWarnings.dismissLowBatteryWarning();
+            ((PowerNotificationWarningsGoogleImpl) mWarnings).dismissLowBatteryWarning();
         } else {
             if (DEBUG) {
                 Slog.d(TAG, "Updating warning");
@@ -659,7 +662,7 @@ public class PowerUI implements CoreStartable, CommandQueue.Callbacks {
         pw.println(mEnableSkinTemperatureWarning);
         pw.print("mEnableUsbTemperatureAlarm=");
         pw.println(mEnableUsbTemperatureAlarm);
-        mWarnings.dump(pw);
+        ((PowerNotificationWarningsGoogleImpl) mWarnings).dump(pw);
     }
 
     /**

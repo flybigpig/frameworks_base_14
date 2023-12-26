@@ -57,6 +57,8 @@ import com.android.systemui.dump.DumpManager;
 import com.android.systemui.power.EnhancedEstimates;
 import com.android.systemui.util.Assert;
 
+import com.google.android.systemui.power.EnhancedEstimatesGoogleImpl;
+
 import java.io.PrintWriter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -386,7 +388,7 @@ public class BatteryControllerImpl extends BroadcastReceiver implements BatteryC
             // Only fetch the estimate if they are enabled
             synchronized (mEstimateLock) {
                 mEstimate = null;
-                if (mEstimates.isHybridNotificationEnabled()) {
+                if (((EnhancedEstimatesGoogleImpl) mEstimates).isHybridNotificationEnabled()) {
                     updateEstimate();
                 }
             }
@@ -414,7 +416,7 @@ public class BatteryControllerImpl extends BroadcastReceiver implements BatteryC
         // throw it in the cache.
         mEstimate = Estimate.getCachedEstimateIfAvailable(mContext);
         if (mEstimate == null) {
-            mEstimate = mEstimates.getEstimate();
+            mEstimate = ((EnhancedEstimatesGoogleImpl) mEstimates).getEstimate();
             if (mEstimate != null) {
                 Estimate.storeCachedEstimate(mContext, mEstimate);
             }

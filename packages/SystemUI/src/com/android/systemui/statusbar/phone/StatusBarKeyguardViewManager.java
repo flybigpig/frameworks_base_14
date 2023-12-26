@@ -95,6 +95,8 @@ import com.android.systemui.unfold.FoldAodAnimationController;
 import com.android.systemui.unfold.SysUIUnfoldComponent;
 import com.android.systemui.R;
 
+import com.google.android.systemui.dreamliner.DockObserver;
+
 import dagger.Lazy;
 
 import java.io.PrintWriter;
@@ -252,7 +254,7 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
             new DockManager.DockEventListener() {
                 @Override
                 public void onEvent(int event) {
-                    boolean isDocked = mDockManager.isDocked();
+                    boolean isDocked = ((DockObserver) mDockManager).isDocked();
             if (isDocked == mIsDocked) {
                 return;
             }

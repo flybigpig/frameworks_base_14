@@ -39,6 +39,8 @@ import com.android.systemui.flags.Flags;
 import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
 
+import com.google.android.systemui.dreamliner.DockObserver;
+
 import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -393,7 +395,7 @@ public class BrightLineFalsingManager implements FalsingManager {
                 || !mKeyguardStateController.isShowing()
                 || mTestHarness
                 || mDataProvider.isJustUnlockedWithFace()
-                || mDataProvider.isDocked()
+                || ((DockObserver) mDataProvider.mDockManager).isDocked()
                 || mAccessibilityManager.isTouchExplorationEnabled()
                 || mDataProvider.isA11yAction()
                 || mDataProvider.isFromTrackpad()
@@ -471,7 +473,7 @@ public class BrightLineFalsingManager implements FalsingManager {
         ipw.print("mJustUnlockedWithFace=");
         ipw.println(mDataProvider.isJustUnlockedWithFace() ? 1 : 0);
         ipw.print("isDocked=");
-        ipw.println(mDataProvider.isDocked() ? 1 : 0);
+        ipw.println(((DockObserver) mDataProvider.mDockManager).isDocked() ? 1 : 0);
         ipw.print("width=");
         ipw.println(mDataProvider.getWidthPixels());
         ipw.print("height=");

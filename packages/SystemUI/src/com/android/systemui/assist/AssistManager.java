@@ -49,6 +49,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.google.android.systemui.assist.AssistManagerGoogle;
+
 /**
  * Class to manage everything related to assist in SystemUI.
  */
@@ -169,6 +171,11 @@ public class AssistManager {
     // Invocation types that should be sent over OverviewProxy instead of handled here.
     private int[] mAssistOverrideInvocationTypes;
 
+    private AssistManagerGoogle mAssistManagerGoogle;
+    private static final String TAG_GOOGLE = "AssistManagerGoogle";
+    protected static final String SHOW_GLOBAL_ACTIONS =
+            "show_global_actions";
+
     @Inject
     public AssistManager(
             DeviceProvisionedController controller,
@@ -184,6 +191,7 @@ public class AssistManager {
             UserTracker userTracker,
             DisplayTracker displayTracker,
             SecureSettings secureSettings) {
+        mAssistManagerGoogle = (AssistManagerGoogle) this;
         mContext = context;
         mDeviceProvisionedController = controller;
         mCommandQueue = commandQueue;
@@ -208,25 +216,28 @@ public class AssistManager {
             public void onAssistantProgress(float progress) {
                 // Progress goes from 0 to 1 to indicate how close the assist gesture is to
                 // completion.
-                onInvocationProgress(INVOCATION_TYPE_GESTURE, progress);
+                mAssistManagerGoogle.onInvocationProgress(INVOCATION_TYPE_GESTURE, progress);
             }
 
             @Override
             public void onAssistantGestureCompletion(float velocity) {
-                onGestureCompletion(velocity);
+                mAssistManagerGoogle.mCheckAssistantStatus = true;
+                mAssistManagerGoogle.mUiController
+                    .onGestureCompletion(
+                        velocity / mAssistManagerGoogle.mContext.getResources().getDisplayMetrics().density);
             }
         });
     }
 
     protected void registerVoiceInteractionSessionListener() {
-        mAssistUtils.registerVoiceInteractionSessionListener(
+        mAssistManagerGoogle.mAssistUtils.registerVoiceInteractionSessionListener(
                 new IVoiceInteractionSessionListener.Stub() {
                     @Override
                     public void onVoiceSessionShown() throws RemoteException {
                         if (VERBOSE) {
                             Log.v(TAG, "Voice open");
                         }
-                        mAssistLogger.reportAssistantSessionEvent(
+                        mAssistManagerGoogle.mAssistLogger.reportAssistantSessionEvent(
                                 AssistantSessionEvent.ASSISTANT_SESSION_UPDATE);
                     }
 
@@ -235,7 +246,7 @@ public class AssistManager {
                         if (VERBOSE) {
                             Log.v(TAG, "Voice closed");
                         }
-                        mAssistLogger.reportAssistantSessionEvent(
+                        mAssistManagerGoogle.mAssistLogger.reportAssistantSessionEvent(
                                 AssistantSessionEvent.ASSISTANT_SESSION_CLOSE);
                     }
 
@@ -255,11 +266,19 @@ public class AssistManager {
 
                         String action = hints.getString(ACTION_KEY);
                         if (SET_ASSIST_GESTURE_CONSTRAINED_ACTION.equals(action)) {
-                            mSysUiState.get()
+                            mAssistManagerGoogle.mSysUiState.get()
                                     .setFlag(
                                             SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED,
                                             hints.getBoolean(CONSTRAINED_KEY, false))
                                     .commitUpdate(mDisplayTracker.getDefaultDisplayId());
+                        } else if (SHOW_GLOBAL_ACTIONS.equals(string)) {
+                            try {
+                                mAssistManagerGoogle.mWindowManagerService.showGlobalActions();
+                            } catch (RemoteException e) {
+                                Log.e(TAG_GOOGLE, "showGlobalActions failed", e);
+                            }
+                        } else {
+                            mAssistManagerGoogle.mNgaMessageHandler.processBundle(hints, mAssistManagerGoogle.mOnProcessBundle);
                         }
                     }
                 });
@@ -429,11 +448,11 @@ public class AssistManager {
             return;
         }
 
-        mAssistUtils.subscribeVisualQueryRecognitionStatus(
+        mAssistManagerGoogle.mAssistUtils.subscribeVisualQueryRecognitionStatus(
                 new IVisualQueryRecognitionStatusListener.Stub() {
                     @Override
                     public void onStartPerceiving() {
-                        mAssistUtils.enableVisualQueryDetection(
+                        mAssistManagerGoogle.mAssistUtils.enableVisualQueryDetection(
                                 mVisualQueryDetectionAttentionListener);
                     }
 
@@ -442,13 +461,13 @@ public class AssistManager {
                         // Treat this as a signal that attention has been lost (and inform listeners
                         // accordingly).
                         handleVisualAttentionChanged(false);
-                        mAssistUtils.disableVisualQueryDetection();
+                        mAssistManagerGoogle.mAssistUtils.disableVisualQueryDetection();
                     }
                 });
     }
 
-    private void handleVisualAttentionChanged(boolean attentionGained) {
-        mVisualQueryAttentionListeners.forEach(
+    private void handleVisualAttentionChanged(AssistManager assistManager, boolean attentionGained) {
+        assistManager.mVisualQueryAttentionListeners.forEach(
                 attentionGained
                         ? VisualQueryAttentionListener::onAttentionGained
                         : VisualQueryAttentionListener::onAttentionLost);

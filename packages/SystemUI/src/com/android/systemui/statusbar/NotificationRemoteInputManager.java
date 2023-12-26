@@ -71,6 +71,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import com.google.android.systemui.statusbar.notification.voicereplies.VoiceReplyAuthState;
+
 /**
  * Class for handling remote input state over a set of notifications. This class handles things
  * like keeping notifications temporarily that were cancelled as a response to a remote input
@@ -390,7 +392,7 @@ public class NotificationRemoteInputManager implements Dumpable {
     public boolean activateRemoteInput(View view, RemoteInput[] inputs, RemoteInput input,
             PendingIntent pendingIntent, @Nullable EditedSuggestionInfo editedSuggestionInfo,
             @Nullable String userMessageContent,
-            @Nullable AuthBypassPredicate authBypassCheck) {
+            @Nullable VoiceReplyAuthState authBypassCheck) {
         ViewParent p = view.getParent();
         RemoteInputView riv = null;
         ExpandableNotificationRow row = null;

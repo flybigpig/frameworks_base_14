@@ -22,6 +22,8 @@ import com.android.systemui.dock.DockManager;
 import com.android.systemui.scrim.ScrimView;
 import com.android.systemui.statusbar.notification.stack.StackStateAnimator;
 
+import com.google.android.systemui.dreamliner.DockObserver;
+
 /**
  * Possible states of the ScrimController state machine.
  */
@@ -184,7 +186,7 @@ public enum ScrimState {
         public void prepare(ScrimState previousState) {
             final boolean alwaysOnEnabled = mDozeParameters.getAlwaysOn();
             final boolean quickPickupEnabled = mDozeParameters.isQuickPickupEnabled();
-            final boolean isDocked = mDockManager.isDocked();
+            final boolean isDocked = ((DockObserver) mDockManager).isDocked();
             mBlankScreen = mDisplayRequiresBlanking;
 
             mFrontTint = Color.BLACK;

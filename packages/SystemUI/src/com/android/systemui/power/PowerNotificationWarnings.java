@@ -79,6 +79,8 @@ import com.android.systemui.util.NotificationChannels;
 import com.android.systemui.util.settings.GlobalSettings;
 import com.android.systemui.volume.Events;
 
+import com.google.android.systemui.power.PowerNotificationWarningsGoogleImpl;
+
 import dagger.Lazy;
 
 import java.io.PrintWriter;
@@ -594,7 +596,7 @@ public class PowerNotificationWarnings implements PowerUI.WarningsUI {
     @Override
     public void dismissLowBatteryWarning() {
         if (DEBUG) Slog.d(TAG, "dismissing low battery warning: level=" + mBatteryLevel);
-        dismissLowBatteryNotification();
+        ((PowerNotificationWarningsGoogleImpl) this).dismissLowBatteryNotification();
     }
 
     private void dismissLowBatteryNotification() {

@@ -24,6 +24,8 @@ import com.android.systemui.doze.DozeMachine.State;
 import com.android.systemui.doze.dagger.DozeScope;
 import com.android.systemui.settings.UserTracker;
 
+import com.google.android.systemui.dreamliner.DockObserver;
+
 import java.io.PrintWriter;
 
 import javax.inject.Inject;
@@ -126,7 +128,7 @@ public class DozeDockHandler implements DozeMachine.Part {
                 return;
             }
             if (mDockManager != null) {
-                mDockManager.addListener(this);
+                ((DockObserver) mDockManager).addListener(this);
             }
             mRegistered = true;
         }
@@ -136,7 +138,7 @@ public class DozeDockHandler implements DozeMachine.Part {
                 return;
             }
             if (mDockManager != null) {
-                mDockManager.removeListener(this);
+                ((DockObserver) mDockManager).removeListener(this);
             }
             mRegistered = false;
         }

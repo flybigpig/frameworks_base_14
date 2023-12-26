@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.google.android.systemui.ambientmusic.AmbientIndicationContainer;
+import com.google.android.systemui.ambientmusic.AmbientIndicationContainerExternal;
+
 /**
  * Custom {@link FrameLayout} that re-inflates when changes to {@link Configuration} happen.
  * Currently supports changes to density, asset path, and locale.
@@ -80,6 +83,8 @@ public class AutoReinflateContainer extends FrameLayout {
         final int N = mInflateListeners.size();
         for (int i = 0; i < N; i++) {
             mInflateListeners.get(i).onInflated(getChildAt(0));
+            AmbientIndicationContainer.updateContainer(((AmbientIndicationContainerExternal)
+                ((ArrayList)mInflateListeners).get(i)).AmbientIndicationContainerExternal);
         }
     }
 
