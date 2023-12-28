@@ -43,6 +43,8 @@ import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 
+import com.google.android.systemui.dreamliner.DockObserver;
+
 /**
  * Orchestrates all things doze.
  *
@@ -59,6 +61,8 @@ public class DozeMachine {
     private final DozeLog mDozeLog;
     private static final String REASON_CHANGE_STATE = "DozeMachine#requestState";
     private static final String REASON_HELD_FOR_STATE = "DozeMachine#heldForState";
+
+    private DockObserver mDockObserver;
 
     public enum State {
         /** Default state. Transition to INITIALIZED to get Doze going. */
@@ -175,6 +179,7 @@ public class DozeMachine {
         for (Part part : parts) {
             part.setDozeMachine(this);
         }
+        mDockObserver = (DockObserver) mDockManager;
     }
 
     /**
@@ -430,8 +435,8 @@ public class DozeMachine {
                 if (state != State.INITIALIZED && (wakefulness == WAKEFULNESS_AWAKE
                         || wakefulness == WAKEFULNESS_WAKING)) {
                     nextState = State.FINISH;
-                } else if (mDockManager.isDocked()) {
-                    nextState = mDockManager.isHidden() ? State.DOZE : State.DOZE_AOD_DOCKED;
+                } else if (mDockObserver.isDocked()) {
+                    nextState = mDockObserver.isHidden() ? State.DOZE : State.DOZE_AOD_DOCKED;
                 } else if (mAmbientDisplayConfig.alwaysOnEnabled(mUserTracker.getUserId())) {
                     nextState = State.DOZE_AOD;
                 } else {

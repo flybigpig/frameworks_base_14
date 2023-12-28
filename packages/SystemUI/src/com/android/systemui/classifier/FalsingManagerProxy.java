@@ -38,6 +38,8 @@ import java.util.concurrent.Executor;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import com.google.android.systemui.dagger.DaggerSysUIGoogleGlobalRootComponent;
+
 /**
  * Simple passthrough implementation of {@link FalsingManager} allowing plugins to swap in.
  *
@@ -64,7 +66,7 @@ public class FalsingManagerProxy implements FalsingManager, Dumpable {
     @Inject
     FalsingManagerProxy(PluginManager pluginManager, @Main Executor executor,
             DeviceConfigProxy deviceConfig, DumpManager dumpManager,
-            Provider<BrightLineFalsingManager> brightLineFalsingManagerProvider) {
+            DaggerSysUIGoogleGlobalRootComponent.WMComponentImpl.SwitchingProvider brightLineFalsingManagerProvider) {
         mPluginManager = pluginManager;
         mDumpManager = dumpManager;
         mDeviceConfig = deviceConfig;

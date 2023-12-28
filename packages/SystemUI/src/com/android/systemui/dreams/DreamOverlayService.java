@@ -56,6 +56,8 @@ import java.util.HashSet;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.android.systemui.dagger.DaggerSysUIGoogleGlobalRootComponent;
+
 /**
  * The {@link DreamOverlayService} is responsible for placing an overlay on top of a dream. The
  * dream reaches directly out to the service with a Window reference (via LayoutParams), which the
@@ -94,7 +96,7 @@ public class DreamOverlayService extends android.service.dreams.DreamOverlayServ
     private final com.android.systemui.dreams.complication.dagger.ComplicationComponent
             mDreamComplicationComponent;
 
-    private final DreamOverlayComponent mDreamOverlayComponent;
+    private final DaggerSysUIGoogleGlobalRootComponent.DreamOverlayComponentImpl mDreamOverlayComponent;
 
     private final DreamOverlayLifecycleOwner mLifecycleOwner;
     private final LifecycleRegistry mLifecycleRegistry;
@@ -158,7 +160,8 @@ public class DreamOverlayService extends android.service.dreams.DreamOverlayServ
             ComplicationComponent.Factory complicationComponentFactory,
             com.android.systemui.dreams.complication.dagger.ComplicationComponent.Factory
                     dreamComplicationComponentFactory,
-            DreamOverlayComponent.Factory dreamOverlayComponentFactory,
+            DaggerSysUIGoogleGlobalRootComponent.DreamOverlayComponentImpl dreamOverlayComponentFactory,
+            DaggerSysUIGoogleGlobalRootComponent.DozeComponentFactory dozeComponentFactory,
             DreamOverlayStateController stateController,
             KeyguardUpdateMonitor keyguardUpdateMonitor,
             UiEventLogger uiEventLogger,
@@ -187,7 +190,7 @@ public class DreamOverlayService extends android.service.dreams.DreamOverlayServ
                 viewModelStore, touchInsetManager);
         mDreamComplicationComponent = dreamComplicationComponentFactory.create(
                 mComplicationComponent.getVisibilityController(), touchInsetManager);
-        mDreamOverlayComponent = dreamOverlayComponentFactory.create(lifecycleOwner,
+        mDreamOverlayComponent = dreamOverlayComponentFactory.DreamOverlayComponentImpl(dozeComponentFactory.sysUIGoogleGlobalRootComponent, dozeComponentFactory.sysUIGoogleSysUIComponentImpl, lifecycleOwner,
                 mComplicationComponent.getComplicationHostViewController(), touchInsetManager,
                 new HashSet<>(Arrays.asList(
                         mDreamComplicationComponent.getHideComplicationTouchHandler())));

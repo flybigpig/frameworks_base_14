@@ -40,6 +40,8 @@ import com.android.systemui.util.concurrency.DelayableExecutor
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
+import com.google.android.systemui.dagger.DaggerSysUIGoogleGlobalRootComponent;
+
 /**
  * Manager for the lifecycle of the connection to a given [ControlsProviderService].
  *
@@ -64,7 +66,7 @@ class ControlsProviderLifecycleManager(
     private val actionCallbackService: IControlsActionCallback.Stub,
     val user: UserHandle,
     val componentName: ComponentName,
-    packageUpdateMonitorFactory: PackageUpdateMonitor.Factory,
+    packageUpdateMonitorFactory: DaggerSysUIGoogleGlobalRootComponent.SysUIGoogleSysUIComponentImpl.SwitchingProvider.PackageUpdateMonitor,
 ) {
 
     val token: IBinder = Binder()

@@ -29,6 +29,8 @@ import java.lang.reflect.InvocationTargetException
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 
+import com.google.android.systemui.SystemUIGoogleInitializer
+
 /**
  * Implementation of AppComponentFactory that injects into constructors.
  *
@@ -43,7 +45,7 @@ abstract class SystemUIAppComponentFactoryBase : AppComponentFactory() {
     companion object {
         private const val TAG = "AppComponentFactory"
         // Must be static due to http://b/141008541.
-        var systemUIInitializer: SystemUIInitializer? = null
+        var systemUIInitializer: SystemUIGoogleInitializer? = null
     }
 
     @set:Inject
@@ -54,9 +56,9 @@ abstract class SystemUIAppComponentFactoryBase : AppComponentFactory() {
      *
      * The returned implementation should be specific to your build.
      */
-    protected abstract fun createSystemUIInitializer(context: Context): SystemUIInitializer
+    protected abstract fun createSystemUIInitializer(context: Context): SystemUIGoogleInitializer
 
-    private fun createSystemUIInitializerInternal(context: Context): SystemUIInitializer {
+    private fun createSystemUIInitializerInternal(context: Context): SystemUIGoogleInitializer {
         return systemUIInitializer ?: run {
             val initializer = createSystemUIInitializer(context.applicationContext)
             try {
@@ -160,7 +162,7 @@ abstract class SystemUIAppComponentFactoryBase : AppComponentFactory() {
      */
     fun interface ContextAvailableCallback {
         /** Notifies when the Application Context is available.  */
-        fun onContextAvailable(context: Context): SystemUIInitializer
+        fun onContextAvailable(context: Context): SystemUIGoogleInitializer
     }
 
     /**

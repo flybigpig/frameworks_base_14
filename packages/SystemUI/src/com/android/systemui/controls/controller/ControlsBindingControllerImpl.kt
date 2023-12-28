@@ -35,13 +35,15 @@ import dagger.Lazy
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
+import com.google.android.systemui.dagger.DaggerSysUIGoogleGlobalRootComponent
+
 @SysUISingleton
 @VisibleForTesting
 open class ControlsBindingControllerImpl @Inject constructor(
     private val context: Context,
     @Background private val backgroundExecutor: DelayableExecutor,
     private val lazyController: Lazy<ControlsController>,
-    private val packageUpdateMonitorFactory: PackageUpdateMonitor.Factory,
+    private val packageUpdateMonitorFactory: DaggerSysUIGoogleGlobalRootComponent.SysUIGoogleSysUIComponentImpl.SwitchingProvider.PackageUpdateMonitor,
     userTracker: UserTracker,
 ) : ControlsBindingController {
 

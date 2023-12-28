@@ -41,6 +41,8 @@ import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
+import com.google.android.systemui.dagger.DaggerSysUIGoogleGlobalRootComponent
+
 /** Binds the bouncer container to its view model. */
 object KeyguardBouncerViewBinder {
     @JvmStatic
@@ -48,7 +50,7 @@ object KeyguardBouncerViewBinder {
         view: ViewGroup,
         viewModel: KeyguardBouncerViewModel,
         primaryBouncerToGoneTransitionViewModel: PrimaryBouncerToGoneTransitionViewModel,
-        componentFactory: KeyguardBouncerComponent.Factory,
+        componentFactory: DaggerSysUIGoogleGlobalRootComponent.DozeComponentFactory,
         messageAreaControllerFactory: KeyguardMessageAreaController.Factory,
         bouncerMessageInteractor: BouncerMessageInteractor,
         bouncerLogger: BouncerLogger,

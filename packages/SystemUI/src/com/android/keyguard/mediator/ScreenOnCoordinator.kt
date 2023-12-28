@@ -27,6 +27,8 @@ import com.android.systemui.util.kotlin.getOrNull
 import java.util.Optional
 import javax.inject.Inject
 
+import com.google.android.systemui.dagger.DaggerSysUIGoogleGlobalRootComponent
+
 /**
  * Coordinates screen on/turning on animations for the KeyguardViewMediator. Specifically for
  * screen on events, this will invoke the onDrawn Runnable after all tasks have completed. This
@@ -40,9 +42,9 @@ class ScreenOnCoordinator @Inject constructor(
 ) {
 
     private val unfoldLightRevealAnimation = unfoldComponent.map(
-        SysUIUnfoldComponent::getUnfoldLightRevealOverlayAnimation).getOrNull()
+        DaggerSysUIGoogleGlobalRootComponent.SysUIUnfoldComponentImpl::getUnfoldLightRevealOverlayAnimation).getOrNull()
     private val foldAodAnimationController = unfoldComponent.map(
-        SysUIUnfoldComponent::getFoldAodAnimationController).getOrNull()
+        DaggerSysUIGoogleGlobalRootComponent.SysUIUnfoldComponentImpl::getFoldAodAnimationController).getOrNull()
     private val pendingTasks = PendingTasksContainer()
 
     /**

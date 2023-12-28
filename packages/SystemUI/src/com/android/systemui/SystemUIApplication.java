@@ -50,6 +50,9 @@ import java.util.TreeMap;
 
 import javax.inject.Provider;
 
+import com.google.android.systemui.SystemUIGoogleInitializer;
+import com.google.android.systemui.dagger.DaggerSysUIGoogleGlobalRootComponent;
+
 /**
  * Application class for SystemUI.
  */
@@ -67,8 +70,8 @@ public class SystemUIApplication extends Application implements
     private CoreStartable[] mServices;
     private boolean mServicesStarted;
     private SystemUIAppComponentFactoryBase.ContextAvailableCallback mContextAvailableCallback;
-    private SysUIComponent mSysUIComponent;
-    private SystemUIInitializer mInitializer;
+    private DaggerSysUIGoogleGlobalRootComponent.SysUIGoogleSysUIComponentImpl mSysUIComponent;
+    private SystemUIGoogleInitializer mInitializer;
 
     public SystemUIApplication() {
         super();

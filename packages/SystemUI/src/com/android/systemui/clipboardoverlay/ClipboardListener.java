@@ -39,6 +39,8 @@ import com.android.systemui.dagger.SysUISingleton;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import com.google.android.systemui.dagger.DaggerSysUIGoogleGlobalRootComponent;
+
 /**
  * ClipboardListener brings up a clipboard overlay when something is copied to the clipboard.
  */
@@ -62,7 +64,7 @@ public class ClipboardListener implements
 
     @Inject
     public ClipboardListener(Context context,
-            Provider<ClipboardOverlayController> clipboardOverlayControllerProvider,
+            DaggerSysUIGoogleGlobalRootComponent.WMComponentImpl.SwitchingProvider clipboardOverlayControllerProvider,
             ClipboardToast clipboardToast,
             ClipboardManager clipboardManager,
             UiEventLogger uiEventLogger) {

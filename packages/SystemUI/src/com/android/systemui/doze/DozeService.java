@@ -34,18 +34,20 @@ import java.io.PrintWriter;
 
 import javax.inject.Inject;
 
+import com.google.android.systemui.dagger.DaggerSysUIGoogleGlobalRootComponent;
+
 public class DozeService extends DreamService
         implements DozeMachine.Service, RequestDoze, PluginListener<DozeServicePlugin> {
     private static final String TAG = "DozeService";
     static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
-    private final DozeComponent.Builder mDozeComponentBuilder;
+    private final DaggerSysUIGoogleGlobalRootComponent.DozeComponentFactory mDozeComponentBuilder;
 
     private DozeMachine mDozeMachine;
     private DozeServicePlugin mDozePlugin;
     private PluginManager mPluginManager;
 
     @Inject
-    public DozeService(DozeComponent.Builder dozeComponentBuilder, PluginManager pluginManager) {
+    public DozeService(DaggerSysUIGoogleGlobalRootComponent.DozeComponentFactory dozeComponentBuilder, PluginManager pluginManager) {
         mDozeComponentBuilder = dozeComponentBuilder;
         setDebug(DEBUG);
         mPluginManager = pluginManager;
@@ -58,7 +60,7 @@ public class DozeService extends DreamService
         setWindowless(true);
 
         mPluginManager.addPluginListener(this, DozeServicePlugin.class, false /* allowMultiple */);
-        DozeComponent dozeComponent = mDozeComponentBuilder.build(this);
+        DaggerSysUIGoogleGlobalRootComponent.DozeComponentFactory dozeComponent = mDozeComponentBuilder.build(this);
         mDozeMachine = dozeComponent.getDozeMachine();
         mDozeMachine.onConfigurationChanged(getResources().getConfiguration());
     }

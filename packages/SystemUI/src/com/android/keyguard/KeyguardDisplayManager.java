@@ -50,6 +50,8 @@ import com.android.systemui.navigationbar.NavigationBarView;
 import com.android.systemui.settings.DisplayTracker;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
 
+import com.google.android.systemui.dagger.*;
+
 import dagger.Lazy;
 
 import java.util.concurrent.Executor;
@@ -66,7 +68,7 @@ public class KeyguardDisplayManager {
     private final DisplayManager mDisplayService;
     private final DisplayTracker mDisplayTracker;
     private final Lazy<NavigationBarController> mNavigationBarControllerLazy;
-    private final KeyguardStatusViewComponent.Factory mKeyguardStatusViewComponentFactory;
+    private final DaggerSysUIGoogleGlobalRootComponent.DozeComponentFactory mKeyguardStatusViewComponentFactory;
     private final ConnectedDisplayKeyguardPresentation.Factory
             mConnectedDisplayKeyguardPresentationFactory;
     private final FeatureFlags mFeatureFlags;
@@ -112,7 +114,7 @@ public class KeyguardDisplayManager {
             @UiBackground Executor uiBgExecutor,
             DeviceStateHelper deviceStateHelper,
             KeyguardStateController keyguardStateController,
-            ConnectedDisplayKeyguardPresentation.Factory
+            DaggerSysUIGoogleGlobalRootComponent.SysUIGoogleSysUIComponentImpl.SwitchingProvider.ConnectedDisplayKeyguardPresentation
                     connectedDisplayKeyguardPresentationFactory,
             FeatureFlags featureFlags) {
         mContext = context;

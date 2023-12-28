@@ -22,6 +22,8 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
+import com.google.android.systemui.dagger.DaggerSysUIGoogleGlobalRootComponent;
+
 /**
  * The {@link ComplicationViewModelTransformer} responsibility is provide a mapping from
  * {@link Complication} to {@link ComplicationViewModel}.
@@ -29,11 +31,11 @@ import javax.inject.Inject;
 public class ComplicationViewModelTransformer {
     private final ComplicationId.Factory mComplicationIdFactory = new ComplicationId.Factory();
     private final HashMap<Complication, ComplicationId> mComplicationIdMapping = new HashMap<>();
-    private final ComplicationViewModelComponent.Factory mViewModelComponentFactory;
+    private final DaggerSysUIGoogleGlobalRootComponent.InputSessionComponentFactory mViewModelComponentFactory;
 
     @Inject
     public ComplicationViewModelTransformer(
-            ComplicationViewModelComponent.Factory viewModelComponentFactory) {
+            DaggerSysUIGoogleGlobalRootComponent.InputSessionComponentFactory viewModelComponentFactory) {
         mViewModelComponentFactory = viewModelComponentFactory;
     }
 
